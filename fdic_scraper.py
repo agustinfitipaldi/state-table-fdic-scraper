@@ -411,21 +411,92 @@ def get_available_variables():
                 start_collecting = True
                 continue
             
-            # Stop collecting at all-caps sections
-            if start_collecting and line.strip().isupper():
+            # Stop collecting at the blank line before "0* - Rounds to zero"
+            if start_collecting and line.strip() == "" and "0* - Rounds to zero" in lines[lines.index(line) + 1]:
                 break
                 
             # Skip empty lines and section headers
             if start_collecting and line.strip() and not line.strip().isupper():
                 # Extract the variable name (first part before the first comma)
-                var = line.split('"')[1].strip()
-                if var and var not in variables:
-                    variables.append(var)
+                parts = line.split('"')
+                if len(parts) >= 2:
+                    var = parts[1].strip()
+                    if var and var not in variables:
+                        variables.append(var)
         
-        return variables
+        return sorted(variables)  # Sort variables alphabetically
     except Exception as e:
         print(f"Error reading variables: {str(e)}")
         return []
+
+def display_variables_page(variables, page_num, items_per_page=15):
+    """Display a single page of variables in a single column"""
+    start_idx = page_num * items_per_page
+    end_idx = min(start_idx + items_per_page, len(variables))
+    page_vars = variables[start_idx:end_idx]
+    
+    if not page_vars:
+        return False
+    
+    # Print header
+    print(f"\nPage {page_num + 1} of {(len(variables) + items_per_page - 1) // items_per_page}")
+    
+    # Print variables in a single column
+    for i, var in enumerate(page_vars, start_idx + 1):
+        print(f"{i}. {var}")
+    
+    return True
+
+def select_variables_with_paging(variables):
+    """Let user select variables through a paging system"""
+    items_per_page = 15
+    total_pages = (len(variables) + items_per_page - 1) // items_per_page
+    selected_vars = []
+    
+    print("\nSelect variables from each page. Leave blank to skip page.")
+    print("You must select at least one variable before finishing.")
+    print("Enter 'done' when finished selecting variables.")
+    
+    current_page = 0
+    while current_page < total_pages:
+        if not display_variables_page(variables, current_page, items_per_page):
+            break
+            
+        print("\nEnter numbers of variables to select (space-separated), or press Enter to skip page:")
+        print("Enter 'done' when finished, 'next' for next page, 'prev' for previous page")
+        
+        choice = input().strip().lower()
+        
+        if choice == 'done':
+            if not selected_vars:
+                print("You must select at least one variable!")
+                continue
+            break
+        elif choice == 'next':
+            if current_page < total_pages - 1:
+                current_page += 1
+            continue
+        elif choice == 'prev':
+            if current_page > 0:
+                current_page -= 1
+            continue
+        elif not choice:  # Empty input, skip page
+            current_page += 1
+            continue
+        
+        try:
+            # Parse selected numbers
+            selected_nums = [int(num) for num in choice.split()]
+            # Validate selections
+            valid_selections = [num for num in selected_nums if 1 <= num <= len(variables)]
+            if valid_selections:
+                selected_vars.extend([variables[num-1] for num in valid_selections])
+                print(f"Selected {len(valid_selections)} variables from this page")
+            current_page += 1
+        except ValueError:
+            print("Invalid input. Please enter numbers separated by spaces.")
+    
+    return selected_vars
 
 def process_file(file_path, selected_variables=None, institution_categories=None):
     print(f"Processing {os.path.basename(file_path)}")
@@ -638,18 +709,10 @@ def main():
                     print("No variables found in CSV files.")
                     continue
                 
-                # Display variables with numbers
-                print("\nAvailable variables:")
-                for i, var in enumerate(variables, 1):
-                    print(f"{i}. {var}")
-                
-                # Get variable selections
-                print("\nEnter the numbers of the variables you want (space-separated, e.g., '1 3 5'):")
-                var_nums = input().strip().split()
-                try:
-                    selected_vars = [variables[int(num)-1] for num in var_nums]
-                except (ValueError, IndexError):
-                    print("Invalid selection. Using default variables.")
+                # Use paging system for variable selection
+                selected_vars = select_variables_with_paging(variables)
+                if not selected_vars:
+                    print("No variables selected. Using default variables.")
                     selected_vars = ['Total Deposits', 'Total Assets']
                 
                 print("\nSelect institution categories:")

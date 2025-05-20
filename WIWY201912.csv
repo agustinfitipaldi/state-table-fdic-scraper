@@ -1,0 +1,59 @@
+FDIC State Tables
+" ","State Charter
+All Institutions
+Wisconsin
+December 31, 2019",,,"State Charter
+All Institutions
+Wyoming
+December 31, 2019",,,"All Insured Institutions
+National
+March 31, 2023",,
+" ","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion"
+"Number of Institutions","160","149","11","25","25",,"4672","3683","989"
+"Number of Employees","11547","7895","3652","1221","1221",,"2129289","187213","1942076"
+"AGGREGATE CONDITION AND INCOME DATA ($ in Millions)",,,,,,,,,
+"Total Assets","61265","42372","18893","7304","7304",,"23715209","1129252","22585957"
+" Earning Assets","57229","39675","17554","6882","6882",,"21518827","1059032","20459795"
+" Total Loans & Leases","45386","30722","14664","4385","4385",,"12212131","717106","11495026"
+" Other Real Estate Owned","62","38","24","17","17",,"2687","413","2273"
+"Total Deposits","49999","35038","14961","6411","6411",,"18743117","968717","17774400"
+"Equity Capital","7385","5040","2345","771","771",,"2261724","109332","2152392"
+"Net Income (year-to-date)","734","487","247","98","98",,"79809","3365","76444"
+" Net Interest Income","2007","1380","627","254","254",,"175726","9490","166236"
+" Provisions for Credit Losses","56","48","9","11","11",,"20742","222","20520"
+" Noninterest Income","611","283","328","63","63",,"85983","2918","83065"
+" Net Charge-Offs","42","28","14","8","8",,"12427","93","12334"
+"PERFORMANCE RATIOS (YTD, %)",,,,,,,,,
+"Yield on Earning Assets","4.58","4.52","4.7","4.67","4.67",,"4.92","4.62","4.94"
+"Cost of Funding Earning Assets","0.96","0.93","1.03","0.8","0.8",,"1.61","1.01","1.64"
+"Net Interest Margin","3.62","3.59","3.67","3.87","3.87",,"3.31","3.6","3.29"
+"Noninterest Income to Average Assets","1.03","0.69","1.78","0.91","0.91",,"1.47","1.04","1.49"
+"Noninterest Expense to Average Assets","2.86","2.57","3.5","2.78","2.78",,"2.41","2.92","2.39"
+"Net Charge-Offs to Loans & Leases","0.1","0.09","0.1","0.18","0.18",,"0.41","0.05","0.43"
+"Credit-Loss Provision to Net Charge-Offs","132.88","169.52","60.57","141.59","141.59",,"156.87","211.7","156.46"
+"Net Operating Income to Average Assets","1.21","1.16","1.33","1.39","1.39",,"1.4","1.22","1.4"
+"Retained Earnings to Average Equity","4.75","5.27","3.65","6.98","6.98",,"6.43","7.25","6.38"
+"Pretax Return on Assets","1.49","1.41","1.65","1.61","1.61",,"1.66","1.4","1.68"
+"Return on Assets","1.24","1.19","1.34","1.4","1.4",,"1.36","1.2","1.37"
+"Return on Equity","10.29","10.03","10.85","13.32","13.32",,"14.42","12.6","14.52"
+"Percent of Unprofitable Institutions","1.88","2.01","0","8","8",,"4.58","4.91","3.34"
+"Percent of Institutions with Earning Gains","76.88","77.18","72.73","84","84",,"66.78","68.86","59.05"
+"CONDITION RATIOS (%)",,,,,,,,,
+"Net Loans & Leases to Total Assets","73.17","71.55","76.78","59.11","59.11",,"50.64","62.67","50.04"
+"Loss Allowance to Loans & Leases","1.24","1.31","1.08","1.53","1.53",,"1.65","1.32","1.68"
+"Reserve Coverage Ratio","132.8","142.55","113.08","271.23","271.23",,"219.12","272.01","217.06"
+"30-89 Past Due Loans to Total Loans & Leases","0.37","0.43","0.24","0.83","0.83",,"0.52","0.48","0.52"
+"Noncurrent Loans & Leases to Total Loans & Leases","0.93","0.92","0.95","0.56","0.56",,"0.76","0.48","0.77"
+"Nonperforming Assets to Total Assets","0.79","0.76","0.87","0.57","0.57",,"0.4","0.35","0.41"
+"Core Deposits to Total Liabilities","85.32","85.67","84.52","88.02","88.02",,"73.31","86.52","72.65"
+"Equity Capital to Total Assets","12.05","11.89","12.41","10.55","10.55",,"9.53","9.68","9.52"
+"Leverage (Core Capital) Ratio","11.65","11.53","11.91","10.33","10.33",,"9.14","11.26","9.03"
+"Community Bank Leverage Ratio (CBLR) Election (Count)","0","0","0","0","0",,"1664","1514","150"
+"Total Risk-Based Capital (Non CBLR Electors)","15.68","15.86","15.29","16.71","16.71",,"15.06","16.78","15"
+"Gross 1-4 Family Mortgages to Gross Assets","17.7","18.2","16.59","12.51","12.51",,"11.61","18.6","11.26"
+"Gross Real Estate Assets to Gross Assets","63.38","62.55","65.24","58.13","58.13",,"36.93","57.28","35.92"
+
+0* - Rounds to zero.
+
+Source: Call Report and Thrift Financial Report
+Prepared by the FDIC-Division of Insurance and Research
