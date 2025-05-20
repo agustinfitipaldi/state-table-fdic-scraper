@@ -480,8 +480,15 @@ def process_file(file_path, selected_variables=None, institution_categories=None
                         break
                 
                 if var_line:
-                    # Split by quotes and get the values
-                    values = [float(x.replace(',', '')) for x in var_line.split('"')[3::2] if x.strip()]
+                    # Split by quotes and get the values, handling "0*" case
+                    values = []
+                    for x in var_line.split('"')[3::2]:
+                        if x.strip():
+                            # Handle "0*" case by treating it as 0
+                            if x.strip() == "0*":
+                                values.append(0.0)
+                            else:
+                                values.append(float(x.replace(',', '')))
                     
                     # Add values for each selected institution category
                     for category in institution_categories:
@@ -545,8 +552,19 @@ def combine_data(selected_variables=None, institution_categories=None):
             
             f.write(",".join(header_parts) + "\n")
             
-            # Write data
-            for i, row in enumerate(sorted(all_data, key=lambda x: (x['State'], x['Date'])), 1):
+            # Sort data by state and properly parsed date
+            def sort_key(row):
+                state = row['State']
+                # Parse date from MM/DD/YYYY format
+                date_parts = row['Date'].split('/')
+                if len(date_parts) == 3:
+                    month, day, year = map(int, date_parts)
+                    # Create a tuple for sorting (state, year, month, day)
+                    return (state, year, month, day)
+                return (state, row['Date'])  # Fallback if date parsing fails
+            
+            # Write data with proper sorting
+            for i, row in enumerate(sorted(all_data, key=sort_key), 1):
                 values = [str(i), row['State'], row['Date']]
                 for var in selected_variables:
                     for category in institution_categories:
