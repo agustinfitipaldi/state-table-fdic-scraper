@@ -390,15 +390,52 @@ def convert_date(date_str):
         print(f"Error converting date {date_str}: {str(e)}")
         return date_str
 
-def process_file(file_path):
-    print(f"\nProcessing {os.path.basename(file_path)}")
+def get_available_variables():
+    """Extract all available variables from a sample CSV file"""
+    csv_dir = os.path.expanduser("~/Downloads/csvs")
+    files = glob.glob(os.path.join(csv_dir, "*.csv"))
+    
+    if not files:
+        return []
+    
+    try:
+        with open(files[0], 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        
+        variables = []
+        start_collecting = False
+        
+        for line in lines:
+            # Start collecting after "AGGREGATE CONDITION..."
+            if "AGGREGATE CONDITION" in line:
+                start_collecting = True
+                continue
+            
+            # Stop collecting at all-caps sections
+            if start_collecting and line.strip().isupper():
+                break
+                
+            # Skip empty lines and section headers
+            if start_collecting and line.strip() and not line.strip().isupper():
+                # Extract the variable name (first part before the first comma)
+                var = line.split('"')[1].strip()
+                if var and var not in variables:
+                    variables.append(var)
+        
+        return variables
+    except Exception as e:
+        print(f"Error reading variables: {str(e)}")
+        return []
+
+def process_file(file_path, selected_variables=None, institution_categories=None):
+    print(f"Processing {os.path.basename(file_path)}")
     
     try:
         # Read the file
         with open(file_path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
         
-        # Get the date from line 4 (it's in the first state block)
+        # Get the date from line 4
         date_line = lines[4]
         date = date_line.split('",,,"')[0].split('\n')[-1].strip()
         date = convert_date(date)  # Convert to MM/DD/YYYY format
@@ -411,49 +448,88 @@ def process_file(file_path):
             if state and "National" not in state and not any(month in state for month in ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]):
                 states.append(state)
         
-        # Get the assets and deposits
-        assets_line = lines[15]
-        deposits_line = lines[19]
+        # If no variables are selected, use default ones
+        if selected_variables is None:
+            selected_variables = ['Total Deposits', 'Total Assets']
+            
+        # If no institution categories are selected, use default (All Institutions)
+        if institution_categories is None:
+            institution_categories = ['All Institutions']
+            
+        # Map institution categories to their indices
+        category_indices = {
+            'All Institutions': [0, 3, 6],
+            'Assets Less Than $1 Billion': [1, 4, 7],
+            'Assets Greater Than $1 Billion': [2, 5, 8]
+        }
         
-        # Split by quotes and get the values
-        assets = [float(x.replace(',', '')) for x in assets_line.split('"')[3::2] if x.strip()]
-        deposits = [float(x.replace(',', '')) for x in deposits_line.split('"')[3::2] if x.strip()]
-        
-        # Take first, fourth, and seventh values (All Institutions for each state)
-        state_assets = [assets[0], assets[3], assets[6]]
-        state_deposits = [deposits[0], deposits[3], deposits[6]]
-        
-        # Combine the data
+        # Initialize results list
         results = []
+        
+        # Process each state
         for i, state in enumerate(states):
-            if i < len(state_assets) and i < len(state_deposits):
-                results.append({
-                    'State': state,
-                    'Date': date,
-                    'Total Deposits': state_deposits[i],
-                    'Total Assets': state_assets[i]
-                })
+            state_data = {'State': state, 'Date': date}
+            
+            # Process each selected variable
+            for var in selected_variables:
+                # Find the line containing the variable
+                var_line = None
+                for line in lines:
+                    if var in line:
+                        var_line = line
+                        break
+                
+                if var_line:
+                    # Split by quotes and get the values
+                    values = [float(x.replace(',', '')) for x in var_line.split('"')[3::2] if x.strip()]
+                    
+                    # Add values for each selected institution category
+                    for category in institution_categories:
+                        if category in category_indices:
+                            idx = category_indices[category][i]
+                            if idx < len(values):
+                                state_data[f"{var} - {category}"] = values[idx]
+                            else:
+                                state_data[f"{var} - {category}"] = None
+                else:
+                    # If variable not found, set all categories to None
+                    for category in institution_categories:
+                        state_data[f"{var} - {category}"] = None
+            
+            results.append(state_data)
         
         return results
     except Exception as e:
         print(f"Error processing file: {str(e)}")
         return None
 
-def combine_data():
+def combine_data(selected_variables=None, institution_categories=None):
     # Get all FDIC files
     csv_dir = os.path.expanduser("~/Downloads/csvs")
     files = glob.glob(os.path.join(csv_dir, "*.csv"))
     
+    # Filter files to only include those matching the state-date pattern
+    state_date_pattern = re.compile(r'^[A-Z]{2,6}\d{6}\.csv$')
+    files = [f for f in files if state_date_pattern.match(os.path.basename(f))]
+    
     if not files:
-        print(f"No files found in {csv_dir}")
+        print(f"No matching files found in {csv_dir}")
         return
     
-    print(f"Found {len(files)} files to process")
+    print(f"Processing {len(files)} files...")
+    
+    # If no variables are selected, use default ones
+    if selected_variables is None:
+        selected_variables = ['Total Deposits', 'Total Assets']
+        
+    # If no institution categories are selected, use default
+    if institution_categories is None:
+        institution_categories = ['All Institutions']
     
     # Process each file
     all_data = []
     for file in files:
-        results = process_file(file)
+        results = process_file(file, selected_variables, institution_categories)
         if results:
             all_data.extend(results)
     
@@ -461,15 +537,23 @@ def combine_data():
     if all_data:
         output_file = os.path.join(csv_dir, 'combined_fdic_data.csv')
         with open(output_file, 'w') as f:
-            # Write header
-            f.write("Obs,State,Date,Total Deposits,Total Assets\n")
+            # Create header with all variable-category combinations
+            header_parts = ['Obs', 'State', 'Date']
+            for var in selected_variables:
+                for category in institution_categories:
+                    header_parts.append(f"{var} - {category}")
+            
+            f.write(",".join(header_parts) + "\n")
             
             # Write data
             for i, row in enumerate(sorted(all_data, key=lambda x: (x['State'], x['Date'])), 1):
-                f.write(f"{i},{row['State']},{row['Date']},{row['Total Deposits']},{row['Total Assets']}\n")
+                values = [str(i), row['State'], row['Date']]
+                for var in selected_variables:
+                    for category in institution_categories:
+                        values.append(str(row.get(f"{var} - {category}", '')))
+                f.write(",".join(values) + "\n")
         
-        print(f"\nData successfully combined and saved to {output_file}")
-        print(f"Total records processed: {len(all_data)}")
+        print(f"Successfully combined {len(all_data)} records into {output_file}")
     else:
         print("No data was processed successfully")
 
@@ -529,7 +613,48 @@ def main():
                     print("Invalid date range format. Please use YYYYMM-YYYYMM format.")
             elif choice == "4":
                 print("\nCombining existing CSV files...")
-                combine_data()
+                
+                # Get available variables
+                variables = get_available_variables()
+                if not variables:
+                    print("No variables found in CSV files.")
+                    continue
+                
+                # Display variables with numbers
+                print("\nAvailable variables:")
+                for i, var in enumerate(variables, 1):
+                    print(f"{i}. {var}")
+                
+                # Get variable selections
+                print("\nEnter the numbers of the variables you want (space-separated, e.g., '1 3 5'):")
+                var_nums = input().strip().split()
+                try:
+                    selected_vars = [variables[int(num)-1] for num in var_nums]
+                except (ValueError, IndexError):
+                    print("Invalid selection. Using default variables.")
+                    selected_vars = ['Total Deposits', 'Total Assets']
+                
+                print("\nSelect institution categories:")
+                print("1. All Institutions")
+                print("2. Assets Less Than $1 Billion")
+                print("3. Assets Greater Than $1 Billion")
+                print("4. All Categories")
+                
+                cat_choice = input("\nEnter your choice (1-4): ").strip()
+                
+                if cat_choice == "1":
+                    selected_cats = ['All Institutions']
+                elif cat_choice == "2":
+                    selected_cats = ['Assets Less Than $1 Billion']
+                elif cat_choice == "3":
+                    selected_cats = ['Assets Greater Than $1 Billion']
+                elif cat_choice == "4":
+                    selected_cats = ['All Institutions', 'Assets Less Than $1 Billion', 'Assets Greater Than $1 Billion']
+                else:
+                    print("Invalid choice. Using default category.")
+                    selected_cats = ['All Institutions']
+                
+                combine_data(selected_vars, selected_cats)
             elif choice == "5":
                 print("\nStarting full scrape and combine...")
                 scraper.scrape_all_states()

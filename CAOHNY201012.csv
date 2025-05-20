@@ -1,0 +1,60 @@
+FDIC State Tables
+" ","State Charter
+All Institutions
+California
+December 31, 2010",,,"State Charter
+All Institutions
+Ohio
+December 31, 2010",,,"State Charter
+All Institutions
+New York
+December 31, 2010",,
+" ","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion","All Institutions","Assets Less Than $1 Billion","Assets Greater Than $1 Billion"
+"Number of Institutions","201","166","35","141","137","4","96","73","23"
+"Number of Employees","37592","9630","27962","28510","6280","22230","63984","5518","58466"
+"AGGREGATE CONDITION AND INCOME DATA ($ in Millions)",,,,,,,,,
+"Total Assets","255047","45702","209344","138895","24503","114392","527231","25631","501599"
+" Earning Assets","229550","42387","187163","120872","22653","98219","433100","23831","409270"
+" Total Loans & Leases","173136","30498","142638","100026","16035","83992","175757","13883","161874"
+" Other Real Estate Owned","1332","402","930","678","123","554","553","50","503"
+"Total Deposits","198739","37010","161729","109645","20090","89555","350590","21406","329185"
+"Equity Capital","33631","6218","27414","18706","2510","16196","70982","2962","68020"
+"Net Income (year-to-date)","755","-63","818","912","100","812","4771","106","4665"
+" Net Interest Income","8933","1738","7195","4830","831","3998","9141","794","8348"
+" Provisions for Credit Losses","2784","494","2290","1798","158","1639","1342","142","1200"
+" Noninterest Income","1559","428","1131","2828","149","2679","12815","372","12443"
+" Net Charge-Offs","2843","457","2386","2538","126","2412","1600","86","1514"
+"PERFORMANCE RATIOS (YTD, %)",,,,,,,,,
+"Yield on Earning Assets","4.8","5.27","4.7","4.87","5.17","4.8","3.03","4.55","2.94"
+"Cost of Funding Earning Assets","0.89","1.04","0.85","0.92","1.47","0.8","0.89","1.13","0.87"
+"Net Interest Margin","3.91","4.23","3.84","3.95","3.71","4","2.14","3.42","2.06"
+"Noninterest Income to Average Assets","0.61","0.96","0.54","2.02","0.61","2.31","2.44","1.48","2.49"
+"Noninterest Expense to Average Assets","2.56","3.76","2.31","3.26","2.82","3.35","2.59","3.48","2.54"
+"Net Charge-Offs to Loans & Leases","1.64","1.5","1.67","2.55","0.78","2.9","0.91","0.63","0.94"
+"Credit-Loss Provision to Net Charge-Offs","97.93","108.14","95.97","70.83","125.97","67.96","83.89","165.38","79.28"
+"Net Operating Income to Average Assets","0.26","-0.19","0.35","0.61","0.39","0.66","0.9","0.32","0.93"
+"Retained Earnings to Average Equity","1.29","-1.88","1.99","-2.97","1.57","-3.65","6.27","1.61","6.47"
+"Pretax Return on Assets","0.52","0.05","0.61","0.96","0.59","1.04","1.35","0.73","1.39"
+"Return on Assets","0.3","-0.14","0.39","0.65","0.41","0.7","0.91","0.42","0.93"
+"Return on Equity","2.34","-1.08","3.09","4.71","3.97","4.82","7.06","3.66","7.21"
+"Percent of Unprofitable Institutions","37.31","39.76","25.71","17.73","17.52","25","12.5","12.33","13.04"
+"Percent of Institutions with Earning Gains","73.63","74.7","68.57","69.5","70.8","25","78.13","76.71","82.61"
+"CONDITION RATIOS (%)",,,,,,,,,
+"Net Loans & Leases to Total Assets","66.26","64.92","66.56","69.61","64.42","70.72","32.81","53.15","31.77"
+"Loss Allowance to Loans & Leases","2.39","2.72","2.32","3.34","1.55","3.68","1.58","1.87","1.56"
+"Reserve Coverage Ratio","69.89","63.9","71.58","106.93","60.35","114.02","52.24","56.26","51.85"
+"30-89 Past Due Loans to Total Loans & Leases","0.92","0.96","0.91","0.93","1.13","0.89","1.03","1.48","0.99"
+"Noncurrent Loans & Leases to Total Loans & Leases","3.42","4.26","3.24","3.13","2.58","3.23","3.03","3.32","3"
+"Nonperforming Assets to Total Assets","2.85","3.74","2.66","2.74","2.21","2.86","1.12","2.02","1.07"
+"Core Deposits to Total Liabilities","78.14","82.38","77.22","82.35","83.84","82.01","45.1","84.21","43.06"
+"Equity Capital to Total Assets","13.14","13.6","13.04","13.46","10.24","14.15","13.3","11.55","13.39"
+"Leverage (Core Capital) Ratio","10.65","12.66","10.21","11.47","9.86","11.83","10.8","10.84","10.8"
+"Community Bank Leverage Ratio (CBLR) Election (Count)","0","0","0","0","0","0","0","0","0"
+"Total Risk-Based Capital (Non CBLR Electors)","16.1","18.4","15.58","15.16","16.74","14.91","19.14","19.45","19.13"
+"Gross 1-4 Family Mortgages to Gross Assets","14.91","7.71","16.49","22.63","29.53","21.17","7.6","18.67","7.03"
+"Gross Real Estate Assets to Gross Assets","56.02","58.6","55.46","48.38","62.93","45.31","31.87","53.3","30.77"
+
+0* - Rounds to zero.
+
+Source: Call Report and Thrift Financial Report
+Prepared by the FDIC-Division of Insurance and Research
