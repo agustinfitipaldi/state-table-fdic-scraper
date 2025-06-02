@@ -456,14 +456,17 @@ def select_variables_with_paging(variables):
     print("\nSelect variables from each page. Leave blank to skip page.")
     print("You must select at least one variable before finishing.")
     print("Enter 'done' when finished selecting variables.")
+    print("Commands: 'all' to select all on page, 'next'/'prev' to navigate, 'done' to finish")
     
     current_page = 0
     while current_page < total_pages:
         if not display_variables_page(variables, current_page, items_per_page):
             break
             
-        print("\nEnter numbers of variables to select (space-separated), or press Enter to skip page:")
-        print("Enter 'done' when finished, 'next' for next page, 'prev' for previous page")
+        print("\nEnter numbers of variables to select (space-separated), or:")
+        print("- 'all' to select all variables on this page")
+        print("- Enter to skip page, 'next' for next page, 'prev' for previous page")
+        print("- 'done' when finished")
         
         choice = input().strip().lower()
         
@@ -480,10 +483,20 @@ def select_variables_with_paging(variables):
             if current_page > 0:
                 current_page -= 1
             continue
+        elif choice == 'all':
+            # Calculate the range for current page
+            start_idx = current_page * items_per_page
+            end_idx = min(start_idx + items_per_page, len(variables))
+            # Add all variables from current page
+            page_vars = variables[start_idx:end_idx]
+            selected_vars.extend(page_vars)
+            print(f"Selected all {len(page_vars)} variables from this page")
+            current_page += 1
+            continue
         elif not choice:  # Empty input, skip page
             current_page += 1
             continue
-        
+            
         try:
             # Parse selected numbers
             selected_nums = [int(num) for num in choice.split()]
@@ -526,13 +539,6 @@ def process_file(file_path, selected_variables=None, institution_categories=None
         # If no institution categories are selected, use default (All Institutions)
         if institution_categories is None:
             institution_categories = ['All Institutions']
-            
-        # Map institution categories to their indices
-        category_indices = {
-            'All Institutions': [0, 3, 6],
-            'Assets Less Than $1 Billion': [1, 4, 7],
-            'Assets Greater Than $1 Billion': [2, 5, 8]
-        }
         
         # Initialize results list
         results = []
@@ -543,30 +549,53 @@ def process_file(file_path, selected_variables=None, institution_categories=None
             
             # Process each selected variable
             for var in selected_variables:
-                # Find the line containing the variable
+                # Find the line containing the variable, handling potential spaces
                 var_line = None
                 for line in lines:
-                    if var in line:
-                        var_line = line
+                    # Handle both normal and space-prefixed variables
+                    if f'"{var}"' in line or f'" {var}"' in line:
+                        var_line = line.strip()
                         break
                 
                 if var_line:
-                    # Split by quotes and get the values, handling "0*" case
+                    # Split the line by quotes
+                    parts = var_line.split('"')
+                    # Get the values, skipping empty parts and commas
                     values = []
-                    for x in var_line.split('"')[3::2]:
-                        if x.strip():
-                            # Handle "0*" case by treating it as 0
-                            if x.strip() == "0*":
-                                values.append(0.0)
-                            else:
-                                values.append(float(x.replace(',', '')))
+                    for part in parts:
+                        part = part.strip()
+                        if part and part != ',' and not part.startswith('State Charter') and not part.startswith('All Insured'):
+                            values.append(part)
+                    
+                    # Remove the variable name
+                    values = values[1:]
+                    
+                    # Get this state's values (3 columns per state)
+                    state_start = i * 3
+                    state_values = values[state_start:state_start + 3]
+                    
+                    # Map categories to positions
+                    categories_map = {
+                        'All Institutions': 0,
+                        'Assets Less Than $1 Billion': 1,
+                        'Assets Greater Than $1 Billion': 2
+                    }
                     
                     # Add values for each selected institution category
                     for category in institution_categories:
-                        if category in category_indices:
-                            idx = category_indices[category][i]
-                            if idx < len(values):
-                                state_data[f"{var} - {category}"] = values[idx]
+                        if category in categories_map:
+                            idx = categories_map[category]
+                            if idx < len(state_values):
+                                value = state_values[idx]
+                                if not value or value == '':
+                                    state_data[f"{var} - {category}"] = None
+                                elif value == "0*":
+                                    state_data[f"{var} - {category}"] = 0.0
+                                else:
+                                    try:
+                                        state_data[f"{var} - {category}"] = float(value.replace(',', ''))
+                                    except ValueError:
+                                        state_data[f"{var} - {category}"] = None
                             else:
                                 state_data[f"{var} - {category}"] = None
                 else:
